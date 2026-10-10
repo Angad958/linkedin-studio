@@ -1,0 +1,19 @@
+On July 2, 2019, one regular expression pushed Cloudflare's CPUs to 100% across the world.
+
+You'd think a global outage needs a giant bug. Not this one. A single new firewall rule reached every Cloudflare server within seconds, and for about 27 minutes a huge share of the sites behind Cloudflare returned 502 errors to people like you.
+
+What went wrong:
+→ The rule used a regex that backtracks.
+→ Backtracking means the engine keeps retrying different ways to match, and on some inputs that's millions of tries for one short string.
+→ Every request hit the rule. Every CPU stalled.
+→ The change didn't get the slow rollout your code would get, so nothing caught it first.
+
+Picture a cashier who recounts every coin in the drawer before each sale. You won't notice. The 10,000 people in line behind you will.
+
+The fix: Cloudflare switched to a regex engine that can't backtrack like that. It also stopped pushing rule changes everywhere at once.
+
+Takeaway: if it runs on every request, your config deserves the same staged rollout as your code.
+
+Do you roll out config changes as carefully as deploys?
+
+#SystemDesign #DevOps #SRE

@@ -1,0 +1,25 @@
+{
+  "name": "linkedin-studio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "generate": "node scripts/generate.mjs",
+    "outreach": "node scripts/outreach.mjs",
+    "send": "node scripts/send-due.mjs",
+    "import-contacts": "node scripts/clean-contacts.mjs",
+    "seed": "node scripts/seed-topics.mjs"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "imapflow": "^2.4.0",
+    "mermaid": "^12.1.0",
+    "next": "^15.5.27",
+    "nodemailer": "^10.1.0",
+    "playwright-core": "^1.64.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  }
+}

@@ -1,0 +1,547 @@
+[
+ {
+  "pillar": "distributed",
+  "title": "Why exactly-once delivery is mostly a myth",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "distributed",
+  "title": "Consistent hashing in 60 seconds",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "distributed",
+  "title": "Leader election with ZooKeeper vs Raft",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "distributed",
+  "title": "Idempotency keys: how payments avoid double charges",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "distributed",
+  "title": "The outbox pattern: never lose an event between DB and Kafka",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "distributed",
+  "title": "Saga pattern vs 2PC for distributed transactions",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "distributed",
+  "title": "Kafka consumer groups and rebalancing, explained",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "distributed",
+  "title": "Backpressure: what happens when consumers fall behind",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "distributed",
+  "title": "Vector clocks vs Lamport timestamps",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "distributed",
+  "title": "CAP theorem is misunderstood: PACELC instead",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "distributed",
+  "title": "Quorum reads and writes (R + W > N)",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "distributed",
+  "title": "Circuit breakers: stop a slow dependency from killing you",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "distributed",
+  "title": "Retries with exponential backoff and jitter",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "distributed",
+  "title": "Hot partitions in Kafka and how to fix them",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "distributed",
+  "title": "Read-your-writes consistency with replicas",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "distributed",
+  "title": "Distributed locks with Redis: Redlock pitfalls",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "distributed",
+  "title": "Event sourcing vs CRUD: when it's worth it",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "distributed",
+  "title": "Gossip protocols: how Cassandra nodes find failures",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "hld",
+  "title": "Design a URL shortener that handles 10K writes/sec",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "hld",
+  "title": "Design WhatsApp message delivery (sent, delivered, read ticks)",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "hld",
+  "title": "Design a rate limiter: token bucket vs sliding window",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "hld",
+  "title": "Design Uber's nearby-drivers search with geohashes",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "hld",
+  "title": "Design a news feed: fan-out on write vs read",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "hld",
+  "title": "Design a notification system for 100M users",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "hld",
+  "title": "Design a distributed job scheduler",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "hld",
+  "title": "Design typeahead/autocomplete search",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "hld",
+  "title": "Design a payment system with idempotent APIs",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "hld",
+  "title": "Design YouTube video upload and transcoding",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "hld",
+  "title": "Design a flash sale system that doesn't oversell",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "hld",
+  "title": "Design a distributed cache (Redis cluster)",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "hld",
+  "title": "Design a delivery tracking pipeline (5M events/day)",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "hld",
+  "title": "Design Google Docs real-time collaboration",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "hld",
+  "title": "Design a ticket booking system (BookMyShow seat locking)",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "hld",
+  "title": "Design a metrics/monitoring system like Prometheus",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "lld",
+  "title": "LLD: Parking lot, the version interviewers actually want",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "lld",
+  "title": "Strategy pattern with a real payment-method example",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "lld",
+  "title": "LLD: Design an elevator system",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "lld",
+  "title": "Observer pattern behind every notification service",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "lld",
+  "title": "LLD: Splitwise expense sharing",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "lld",
+  "title": "State pattern for order lifecycles",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "lld",
+  "title": "SOLID with one Java example per letter",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "lld",
+  "title": "LLD: In-memory rate limiter class design",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "lld",
+  "title": "Factory vs Builder: when to use which",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "lld",
+  "title": "LLD: Design an LRU cache in O(1)",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "lld",
+  "title": "Chain of responsibility for request validation",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "lld",
+  "title": "LLD: Design BookMyShow with concurrency on seats",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "lld",
+  "title": "Composition over inheritance, with a real refactor",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "lld",
+  "title": "LLD: Snake and Ladder (what interviewers grade)",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "lld",
+  "title": "Thread-safe singleton in Java: 4 ways, 1 right answer",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "incident",
+  "title": "Postmortem: the retry storm that took down a healthy service",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "incident",
+  "title": "Cache stampede: when your cache expiry causes an outage",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "incident",
+  "title": "The thundering herd after a deploy",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "incident",
+  "title": "Kafka consumer lag spiral: a production story shape",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "incident",
+  "title": "Connection pool exhaustion: the silent outage",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "incident",
+  "title": "Timezone bug that only fires at midnight IST",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "incident",
+  "title": "Split-brain: two leaders, one database",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "incident",
+  "title": "Memory leak that only shows after 3 days in prod",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "incident",
+  "title": "The N+1 query that passed every review",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "incident",
+  "title": "DNS caching and the outage nobody could reproduce",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "incident",
+  "title": "GC pauses causing p99 latency spikes in JVM services",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "incident",
+  "title": "A config push that broke everything: why canary releases matter",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "incident",
+  "title": "Duplicate payments from a webhook retry",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "incident",
+  "title": "Disk full on a Kafka broker: what actually happens",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "incident",
+  "title": "Clock skew breaking token expiry",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "ai",
+  "title": "How a RAG pipeline actually works, end to end",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "ai",
+  "title": "Chunking strategies for RAG that change answer quality",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "ai",
+  "title": "Why your RAG hallucinates: retrieval failures, not the LLM",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "ai",
+  "title": "Semantic caching for LLM calls",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "ai",
+  "title": "LLM evals: how to test a non-deterministic system",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "ai",
+  "title": "What MCP (Model Context Protocol) is and why it matters",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "ai",
+  "title": "Agent loops: tools, memory and the stopping problem",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "ai",
+  "title": "Vector databases: HNSW index in 60 seconds",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "ai",
+  "title": "Prompt injection is a security bug, treat it like one",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "ai",
+  "title": "LLM latency: streaming, batching and KV cache",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "ai",
+  "title": "Hybrid search: BM25 + embeddings",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "ai",
+  "title": "Guardrails for LLM output in production",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "ai",
+  "title": "Cost control for LLM apps: routing small vs large models",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "ai",
+  "title": "Function calling: how an LLM 'uses' an API",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "ai",
+  "title": "Fine-tuning vs RAG vs prompting: a decision tree",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "howitworks",
+  "title": "How WhatsApp statuses disappear after 24 hours",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "howitworks",
+  "title": "How Instagram shows 'seen by' on stories",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "howitworks",
+  "title": "How Google Docs knows who's typing",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "howitworks",
+  "title": "How Swiggy/Zomato assigns a delivery partner",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "howitworks",
+  "title": "How UPI moves money in under 2 seconds",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "howitworks",
+  "title": "How Netflix picks a server close to you (CDN)",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "howitworks",
+  "title": "How 'last seen' works at WhatsApp scale",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "howitworks",
+  "title": "How Uber calculates surge pricing zones",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "howitworks",
+  "title": "How Twitter/X counts likes without locking a row",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "howitworks",
+  "title": "How Spotify starts playing instantly",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "howitworks",
+  "title": "How OTP SMS delivery works behind the scenes",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "howitworks",
+  "title": "How a load balancer decides where your request goes",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "howitworks",
+  "title": "How Git stores your code (content-addressed objects)",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "howitworks",
+  "title": "How Amazon shows 'only 2 left in stock'",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "casestudy",
+  "title": "GitHub's 24-hour outage after a 43-second network partition (Oct 2018)",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "casestudy",
+  "title": "The AWS S3 outage caused by one mistyped command (Feb 2017)",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "casestudy",
+  "title": "Cloudflare's global outage from a single regular expression (July 2019)",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "casestudy",
+  "title": "How Facebook disappeared from the internet: the BGP outage (Oct 2021)",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "casestudy",
+  "title": "Knight Capital lost $440M in 45 minutes from a bad deploy (2012)",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "casestudy",
+  "title": "Why Discord moved trillions of messages from Cassandra to ScyllaDB",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "casestudy",
+  "title": "Roblox's 73-hour outage and the Consul streaming bug (Oct 2021)",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "casestudy",
+  "title": "The CrowdStrike update that crashed 8.5 million Windows machines (July 2024)",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "casestudy",
+  "title": "Netflix Chaos Monkey: breaking production on purpose",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "casestudy",
+  "title": "Why Uber moved from Postgres to MySQL (2016)",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "casestudy",
+  "title": "Stripe's idempotency keys: how retries stop double charges",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "casestudy",
+  "title": "Slack's January 2021 outage: when everyone came back from holiday at once",
+  "media_hint": "animation"
+ },
+ {
+  "pillar": "casestudy",
+  "title": "Atlassian's 2022 outage: deleting 775 customers' sites by mistake",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "casestudy",
+  "title": "How Figma scaled Postgres by sharding it horizontally",
+  "media_hint": "diagram"
+ },
+ {
+  "pillar": "casestudy",
+  "title": "The leap second that crashed Reddit, LinkedIn and others (2012)",
+  "media_hint": "carousel"
+ },
+ {
+  "pillar": "casestudy",
+  "title": "Google Cloud's June 2019 network outage from a config change",
+  "media_hint": "diagram"
+ }
+]

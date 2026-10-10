@@ -1,0 +1,13 @@
+node_modules
+.next
+# personal data: database, logs, resume, contact lists, generated drafts
+data
+drafts
+# secrets
+.env.local
+.env*.local
+# local tooling scratch (backups, review ledgers)
+.superpowers
+__pycache__
+*.pyc
+.DS_Store

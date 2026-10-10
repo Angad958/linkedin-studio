@@ -1,0 +1,21 @@
+On February 28, 2017, one typo took a big piece of the internet offline for about 4 hours.
+
+An AWS engineer was debugging S3's billing system in us-east-1. It's routine work. The command should've removed a few servers. One input was wrong, so it removed far more, including servers that two core S3 subsystems couldn't run without, and S3 in that region stopped answering.
+
+Sites like Slack, Trello and Quora broke. Even the AWS Service Health Dashboard couldn't update, because it lived on S3 too.
+
+Why your app would've failed:
+→ S3's index subsystem knows where each of your objects lives.
+→ Without it, your GETs fail.
+→ It wasn't a quick restart. The index had to check a huge pile of metadata before anyone could trust it again, and at that size it takes hours.
+→ AWS said those subsystems hadn't been fully restarted in many years.
+
+It's like a library losing its catalogue. Your book's still on the shelf, exactly where it was, and you've got absolutely no way to find it until someone rebuilds the whole index.
+
+The fix was simple. AWS made the tool remove capacity slowly and refuse to go below a safe minimum.
+
+Takeaway: if your tool can delete capacity, give it a speed limit and a floor.
+
+Which command in your system is one typo away from doing this to you?
+
+#SystemDesign #AWS #SRE
