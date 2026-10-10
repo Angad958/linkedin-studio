@@ -99,12 +99,24 @@ carousel.json  (7-10 slides; cover title <= 6 words; headlines <= 7 words; bodie
 ]}
 Use point slides for the mechanism, plus at least one of compare/diagram where it helps understanding.
 
-animation.json  (renders a ~11s 1080x1350 explainer video: badge + title, the stat pops, then steps
-appear one by one along a flow with a moving packet, then the takeaway)
-{ "kicker":"Outage Breakdown", "badge":"Cloudflare · July 2, 2019", "title":"<= 8 words", "subtitle":"optional <= 10 words",
-  "stat":{"value":"27 min","label":"<= 5 words"},
-  "steps":[ {"label":"<= 5 words","detail":"<= 9 words"} ],   // exactly 3 or 4 steps
-  "takeaway":"<= 16 words" }
+animation.json  (renders a ~15-20s 1080x1350 explainer video as an ANIMATED SYSTEM DIAGRAM: services are boxes,
+requests are dots moving along the arrows, and the story plays out in beats with one short caption each. Show the
+mechanism with motion, not with text: no stat, no bullet steps, no paragraphs)
+{ "kicker":"Distributed Systems", "badge":"Netflix · Hystrix, 2012", "title":"<= 7 words",
+  "nodes":[ {"id":"users","label":"Users","at":[1,0]},                      // 3-6 nodes, label <= 2 words
+            {"id":"api","label":"API","sub":"thread pool","gauge":true,"at":[1,1]},   // sub <= 3 words (optional)
+            {"id":"db","label":"Database","at":[1,2]} ],                    // "at":[col,row], col 0-2, row 0-2
+  "edges":[ {"from":"users","to":"api"}, {"from":"api","to":"db","breaker":true} ],  // breaker: at most one edge, only if the topic has one
+  "beats":[                                                                  // 4-6 beats, dur 1.8-4s each
+    {"caption":"<= 7 words, **bold** one key word", "dur":2.6,
+     "nodes":{"db":{"status":"slow"},"api":{"load":0.8}},   // status ok|slow|down, load 0-1 fills a "gauge" node's bar; both carry forward
+     "breaker":"closed",                                   // closed|open|half, carries forward
+     "flows":[{"from":"users","to":"api","kind":"ok"}] }  // kind: ok | slow (dots pile up) | fail (red burst at target)
+  ],                                                       //       | fallback (bounces back at the breaker) | probe (one test request)
+  "takeaway":"<= 12 words" }
+Rules: every flow must follow an edge (either direction); the first beat shows the healthy normal state, then the
+failure builds, then the fix, then healthy again. Keep the layout a readable tree: an entry node at row 0, the
+component under stress in the middle, dependencies in the bottom row.
 
 diagram.json  (renders a 1080x1350 image read on a PHONE; Mermaid must be valid; 4-6 nodes total,
 at most 4 levels deep (branch sideways rather than one long chain), labels <= 3 words,
