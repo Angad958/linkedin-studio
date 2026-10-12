@@ -12,7 +12,7 @@ function harness({ failComment = false } = {}) {
     createPost: async (a) => { calls.push(['post', a]); return 'urn:li:share:9'; },
     createComment: async (u, t) => { calls.push(['comment', u, t]); if (failComment) throw new Error('boom'); },
   };
-  const deps = { client, save: (f) => { calls.push(['save', f]); saved.push(f); }, filePath: (f) => `/d/${f}` };
+  const deps = { client, save: (f) => { calls.push(['save', f]); saved.push(f); }, filePath: (f) => `/d/${f}`, frame: {} };
   return { calls, saved, deps };
 }
 const base = { title: 'T', text: 'Hi (there) #AI', first_comment: 'Source: https://x.com', media_json: '[]', li_post_urn: null, li_comment_done: 0 };

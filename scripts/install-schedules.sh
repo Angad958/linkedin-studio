@@ -12,11 +12,11 @@ PATHS="$(dirname "$NODE"):$HOME/.local/bin:$HOME/.local/opt/ffmpeg:/Library/Fram
 mkdir -p "$LA" "$DIR/data/logs"
 
 write() { # name, program-args-xml, schedule-xml
-  cat > "$LA/com.angad.linkedin-studio.$1.plist" <<PL
+  cat > "$LA/com.manav.linkedin-studio.$1.plist" <<PL
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
-  <key>Label</key><string>com.angad.linkedin-studio.$1</string>
+  <key>Label</key><string>com.manav.linkedin-studio.$1</string>
   <key>ProgramArguments</key><array>$2</array>
   <key>WorkingDirectory</key><string>$DIR</string>
   <key>EnvironmentVariables</key><dict><key>PATH</key><string>$PATHS</string><key>HOME</key><string>$HOME</string></dict>
@@ -35,7 +35,7 @@ write outreach "$(s "$NODE")$(s "$DIR/scripts/outreach.mjs")" "<key>StartCalenda
 write sender "$(s "$NODE")$(s "$DIR/scripts/send-due.mjs")" "<key>StartInterval</key><integer>120</integer><key>RunAtLoad</key><true/>"
 
 for n in web generate outreach sender; do
-  launchctl bootout "gui/$(id -u)/com.angad.linkedin-studio.$n" 2>/dev/null || true
-  launchctl bootstrap "gui/$(id -u)" "$LA/com.angad.linkedin-studio.$n.plist"
+  launchctl bootout "gui/$(id -u)/com.manav.linkedin-studio.$n" 2>/dev/null || true
+  launchctl bootstrap "gui/$(id -u)" "$LA/com.manav.linkedin-studio.$n.plist"
 done
 echo "Installed. Studio: http://localhost:3000   Logs: $DIR/data/logs/"

@@ -33,3 +33,9 @@ test('canPublish depends on a live publish job, not on time', () => {
   assert.equal(canPublish({ status: 'publishing' }, true), false);
   assert.equal(canPublish({ status: 'publishing' }, false), true);
 });
+
+test('framePost adds header and hashtags and drops a trailing hashtag line', async () => {
+  const { framePost } = await import('../lib/linkedin-format.mjs');
+  assert.equal(framePost('Body\n\n#A #B', { header: 'H', hashtags: '#X' }), 'H\n\nBody\n\n#X');
+  assert.equal(framePost('Body\n\n#A', {}), 'Body\n\n#A');
+});

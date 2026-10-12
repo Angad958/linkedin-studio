@@ -1,4 +1,4 @@
-You are generating today's LinkedIn post for Angad Shah. You are running unattended:
+You are generating today's LinkedIn post for Manav Singh. You are running unattended:
 do not ask questions, do not wait for a "yes", do not post or log anything. Write files only.
 
 ## Inputs
@@ -31,7 +31,7 @@ do not ask questions, do not wait for a "yes", do not post or log anything. Writ
    They should understand every line on the first read.
    - **No first person, ever.** No I, I'm, I've, I'd, me, my, we, our, us. Not in the post, the
      hooks, the first comment or the media. Write about the case ("GitHub's database...") and
-     speak to the reader ("you") where that helps. Don't mention Angad's own work or job hunting.
+     speak to the reader ("you") where that helps. Don't mention Manav's own work or job hunting.
    - Plain words first, jargon second. The first time a term appears, explain it in a few plain
      words, e.g. "idempotent (doing it twice has the same effect as once)". Use at most 3
      technical terms that need defining. Drop the rest.
@@ -77,7 +77,7 @@ do not ask questions, do not wait for a "yes", do not post or log anything. Writ
      "media_type": "carousel" | "animation" | "diagram",
      "first_comment": "optional text for the first comment, or empty string",
      "case_study": {"name": "e.g. GitHub, Oct 2018", "real": true, "source": "url or empty if scenario"},
-     "flags": ["anything Angad must check before posting, e.g. a fact you could only partly verify"]
+     "flags": ["anything Manav must check before posting, e.g. a fact you could only partly verify"]
    }
    post.txt must start with hooks[chosen].line as its first line exactly.
 
@@ -99,24 +99,40 @@ carousel.json  (7-10 slides; cover title <= 6 words; headlines <= 7 words; bodie
 ]}
 Use point slides for the mechanism, plus at least one of compare/diagram where it helps understanding.
 
-animation.json  (renders a ~15-20s 1080x1350 explainer video as an ANIMATED SYSTEM DIAGRAM: services are boxes,
-requests are dots moving along the arrows, and the story plays out in beats with one short caption each. Show the
-mechanism with motion, not with text: no stat, no bullet steps, no paragraphs)
-{ "kicker":"Distributed Systems", "badge":"Netflix · Hystrix, 2012", "title":"<= 7 words",
-  "nodes":[ {"id":"users","label":"Users","at":[1,0]},                      // 3-6 nodes, label <= 2 words
-            {"id":"api","label":"API","sub":"thread pool","gauge":true,"at":[1,1]},   // sub <= 3 words (optional)
-            {"id":"db","label":"Database","at":[1,2]} ],                    // "at":[col,row], col 0-2, row 0-2
-  "edges":[ {"from":"users","to":"api"}, {"from":"api","to":"db","breaker":true} ],  // breaker: at most one edge, only if the topic has one
-  "beats":[                                                                  // 4-6 beats, dur 1.8-4s each
-    {"caption":"<= 7 words, **bold** one key word", "dur":2.6,
-     "nodes":{"db":{"status":"slow"},"api":{"load":0.8}},   // status ok|slow|down, load 0-1 fills a "gauge" node's bar; both carry forward
-     "breaker":"closed",                                   // closed|open|half, carries forward
-     "flows":[{"from":"users","to":"api","kind":"ok"}] }  // kind: ok | slow (dots pile up) | fail (red burst at target)
-  ],                                                       //       | fallback (bounces back at the breaker) | probe (one test request)
-  "takeaway":"<= 12 words" }
-Rules: every flow must follow an edge (either direction); the first beat shows the healthy normal state, then the
-failure builds, then the fix, then healthy again. Keep the layout a readable tree: an entry node at row 0, the
-component under stress in the middle, dependencies in the bottom row.
+animation.json  (renders a ~16s 1080x1350 explainer video styled as a light "dashboard" card that stays on screen the
+whole time: a bold header, a live animated system diagram in the middle, a live metric box, a phone showing what the
+user experiences, a legend of chips, a "same pattern everywhere" box and THE INTERVIEW LINE at the bottom.
+Every field below is required; the board looks empty without them.)
+{ "kicker":"System Design", "badge":"Google Maps · 2009",
+  "title":"How Maps sees the **traffic jam**",        // <= 7 words, UPPERCASED on screen, **bold** = red highlight
+  "subtitle":"No cameras. Every phone on the road quietly reports its speed.",   // <= 14 words, the one-line premise
+  "metric":{"label":"this road, live speed","normal":"52 km/h"},   // the ONE number that changes as the story plays
+  "outcome":{"label":"your phone"},                    // the phone panel: what the end user sees
+  "nodes":[ {"id":"phones","label":"Phones","sub":"speed + GPS","icon":"phone","at":[0,0]},   // 3-5 nodes, label <= 2 words
+            {"id":"agg","label":"Aggregator","sub":"avg per road","icon":"server","gauge":true,"at":[1,1]},
+            {"id":"map","label":"Traffic Map","sub":"colours roads","icon":"map","at":[2,0]} ],
+            // icon: user users phone server db cache queue cloud globe lock mail map car worker api shield clock lb file bell
+            // "at":[col,row], col 0-2, row 0-2; zig-zag rows so boxes don't overlap
+  "edges":[ {"from":"phones","to":"agg"}, {"from":"agg","to":"map","breaker":false} ],  // breaker: at most one edge, only if the topic has one
+  "beats":[                                            // 4-6 beats, dur 2.4-3s each
+    {"caption":"Free flow: every phone pings its **speed**",   // <= 7 words
+     "tone":"ok",                                      // ok | warn | bad | info: colours the caption and default metric
+     "dur":2.6,
+     "metric":"52 km/h",                               // or {"value":"9 km/h","tone":"bad"}; numbers animate between beats
+     "outcome":{"value":"ETA 22 min","note":"optional <= 8 words","alt":false},  // value <= 4 words; alt:true draws a reroute line
+     "nodes":{"agg":{"load":0.3}},                     // status ok|slow|down, load 0-1 for a "gauge" node; both carry forward
+     "breaker":"closed",                               // closed|open|half, only with a breaker edge
+     "flows":[{"from":"phones","to":"agg","kind":"ok"}] }   // ok | slow (dots pile up) | fail (red burst) | fallback | probe
+  ],
+  "legend":[{"text":"every phone = a sensor","tone":"accent"},{"text":"avg speed per road","tone":"info"},
+            {"text":"red = avg << normal","tone":"bad"},{"text":"filter the outliers","tone":"ok"}],   // exactly 4 chips, <= 5 words
+  "pattern":"surge pricing zones, train crowding meters, air quality maps: millions of tiny sensors, one honest median",  // <= 22 words: where else this pattern shows up
+  "interview":"Aggregate the sensors, trust the median, drop the outliers.",   // <= 12 words, a line to say in an interview
+  "takeaway":"Crowd data is powerful, so filter the noise." }                  // <= 10 words, the final caption
+Rules: every flow must follow an edge (either direction). Story arc: healthy normal state, the problem builds (metric
+worsens, nodes go slow/down, outcome gets worse), the mechanism kicks in, the outcome recovers, then a twist or caveat
+beat (tone "info"). The metric and outcome must change across beats; that motion is the point of the video.
+The name, role and "open to work" footer are added automatically. Never put them in the spec.
 
 diagram.json  (renders a 1080x1350 image read on a PHONE; Mermaid must be valid; 4-6 nodes total,
 at most 4 levels deep (branch sideways rather than one long chain), labels <= 3 words,

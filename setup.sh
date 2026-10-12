@@ -49,6 +49,6 @@ fi
 cat <<'TXT'
 
 Done. Open http://localhost:3000
-Next: fill in .env.local (Gmail, LinkedIn keys), put your resume at data/Angad_Shah_Resume.pdf (or set RESUME_PATH),
+Next: fill in .env.local (Gmail, LinkedIn keys), put your resume at data/Manav_Singh_SDE_Resume.pdf (or set RESUME_PATH),
 import contacts, then Settings -> Connect LinkedIn. Step-by-step: README.md, "Set up on a new Mac".
 TXT

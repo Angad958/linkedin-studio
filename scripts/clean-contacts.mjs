@@ -14,7 +14,7 @@ const PERSONAL = new Set(['gmail.com', 'yahoo.com', 'yahoo.co.in', 'yahoo.in', '
   'live.com', 'ymail.com', 'icloud.com', 'aol.com', 'msn.com', 'rocketmail.com', 'googlemail.com', 'protonmail.com', 'zoho.com']);
 const GENERIC_RE = /^(hr|hrd|hrm|hrteam|career|careers|jobs?|recruit\w*|talent\w*|hiring|campus\w*|freshers?|info|admin|resumes?|cv|apply|contact|hello|people|placements?|opportunit\w*|humanresources?|staffing|vacanc\w*)([._-]?[a-z0-9]*)?$/i;
 const BLOCK_RE = /^(no-?reply|do-?not-?reply|mailer-daemon|postmaster|abuse|unsubscribe|bounce\w*|test|example)/i;
-const EXCLUDE_DOMAINS = ['meesho.com', 'valmo.in', 'example.com', 'domain.com', 'email.com'];
+const EXCLUDE_DOMAINS = ['rippling.com', 'example.com', 'domain.com', 'email.com'];
 // Product/tech companies that hire for backend / SDE-2 / AI roles. Matched against the email's registrable domain label.
 const PRODUCT = new Set(`amazon google microsoft flipkart myntra cred zomato swiggy paytm phonepe razorpay uber olacabs ola atlassian adobe
  salesforce oracle walmart walmartlabs linkedin intuit sprinklr freshworks zoho postman browserstack groww zerodha upstox dream11 sharechat

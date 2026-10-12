@@ -13,5 +13,5 @@ export default async function DraftPage({ params }) {
   if (!d) notFound();
   const type = d.status === 'publishing' ? 'publish' : 'generate';
   const job = getDb().prepare('SELECT * FROM jobs WHERE type=? AND detail LIKE ? ORDER BY id DESC LIMIT 1').get(type, `draft ${d.id}:%`);
-  return <DraftEditor initial={d} job={job || null} handle={config.handle} li={authStatus()} jobActive={Boolean(activePublishJob(d.id))} />;
+  return <DraftEditor initial={d} job={job || null} handle={config.handle} frame={config.postFrame} li={authStatus()} jobActive={Boolean(activePublishJob(d.id))} />;
 }

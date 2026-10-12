@@ -35,7 +35,7 @@ Local app at **http://localhost:3000** that:
 2. **Fill in `.env.local`.** Set `LINKEDIN_HANDLE` and `FROM_NAME` to your name.
 3. **Gmail** (for recruiter outreach): Google Account → Security → turn on 2-Step Verification →
    "App passwords" → create one. Put your address in `GMAIL_USER` and the 16 characters in `GMAIL_APP_PASSWORD`.
-4. **Resume:** copy it to `data/Angad_Shah_Resume.pdf`, or set `RESUME_PATH` to wherever it lives.
+4. **Resume:** copy it to `data/Manav_Singh_SDE_Resume.pdf`, or set `RESUME_PATH` to wherever it lives.
 5. **Recruiter contacts:** `node scripts/clean-contacts.mjs path/to/list.csv`. The CSV needs the columns
    `Email,Name,Company,Source Sheet`. The contact list is not in this repo on purpose.
 6. **LinkedIn posting:**
@@ -44,7 +44,7 @@ Local app at **http://localhost:3000** that:
    2. On the **Products** tab, add **Share on LinkedIn** and **Sign In with LinkedIn using OpenID Connect**.
    3. On the **Auth** tab, add the redirect URL `http://localhost:3000/api/linkedin/callback` exactly. Copy the
       Client ID and Client Secret into `LINKEDIN_CLIENT_ID` and `LINKEDIN_CLIENT_SECRET`.
-7. **Restart** to load `.env.local`: `launchctl kickstart -k gui/$(id -u)/com.angad.linkedin-studio.web`
+7. **Restart** to load `.env.local`: `launchctl kickstart -k gui/$(id -u)/com.manav.linkedin-studio.web`
 8. **Connect:** open Settings → **Connect LinkedIn** and approve. The sign-in lasts 60 days, and the queue
    shows a banner when it's time to Reconnect.
 9. **Review `~/.claude/linkedin/voice.md`.** For a better voice match, paste in 2-3 of your own posts, and check
@@ -75,7 +75,7 @@ Logs: `data/logs/`. Database: `data/studio.db`. Drafts and media: `drafts/<date>
 
 ## How contacts are ranked
 The HR list is cleaned on import. Glued-together cells get split, invalid addresses and dead domains (no mail
-server) are dropped, and Meesho is excluded. Each contact gets a score: your "MY LIST" rows and the recent sheets
+server) are dropped, and Rippling (current employer) is excluded. Each contact gets a score: your "MY LIST" rows and the recent sheets
 score highest, then named people over shared inboxes, then product companies. **Tier A** is emailed first, and
 **tier B** only while the bounce rate stays under 3%. Sending pauses itself if bounces exceed 6% or Gmail rejects
 the login. Only one person per company is emailed at a time.

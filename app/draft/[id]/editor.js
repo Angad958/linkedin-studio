@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { canPublish, pickMedia } from '@/lib/linkedin-format.mjs';
+import { canPublish, framePost, pickMedia } from '@/lib/linkedin-format.mjs';
 
 const mediaUrl = (id, f, dl) => `/api/media/${id}/${encodeURIComponent(f)}${dl ? '?download=1' : ''}`;
 
@@ -92,7 +92,7 @@ function PostToLinkedIn({ d, li, busy, stuck, onPublish, onSkipComment }) {
   );
 }
 
-export default function DraftEditor({ initial, job: initialJob, handle, li, jobActive }) {
+export default function DraftEditor({ initial, job: initialJob, handle, frame, li, jobActive }) {
   const router = useRouter();
   const [d, setD] = useState(initial);
   const [text, setText] = useState(initial.text || '');
@@ -106,6 +106,7 @@ export default function DraftEditor({ initial, job: initialJob, handle, li, jobA
   const hooks = JSON.parse(d.hooks_json || '[]');
   const flags = JSON.parse(d.flags_json || '[]');
   const dirty = text !== (d.text || '') || firstComment !== (d.first_comment || '') || chosen !== (d.chosen_hook ?? 0);
+  const full = framePost(text, frame);
   const len = text.length;
 
   useEffect(() => {
@@ -183,7 +184,7 @@ export default function DraftEditor({ initial, job: initialJob, handle, li, jobA
       {(d.status === 'approved' || stuck) && (
         <div style={{ margin: '16px 0' }} className="grid">
           <PostToLinkedIn d={d} li={li} busy={busy} stuck={stuck} onPublish={() => act('publish')} onSkipComment={() => act('skip_comment')} />
-          {!d.li_post_urn && <details><summary className="small muted">Post manually instead</summary><div style={{ marginTop: 10 }}><PublishKit d={d} text={text} onPosted={(url) => act('posted', { url })} /></div></details>}
+          {!d.li_post_urn && <details><summary className="small muted">Post manually instead</summary><div style={{ marginTop: 10 }}><PublishKit d={d} text={full} onPosted={(url) => act('posted', { url })} /></div></details>}
         </div>
       )}
       {d.status === 'posted' && <div className="okbox" style={{ margin: '16px 0' }}>Posted {d.posted_at}{d.posted_url && <> · <a href={d.posted_url} target="_blank">view on LinkedIn ↗</a></>}. Logged to ~/.claude/linkedin/log.md.</div>}
@@ -201,7 +202,7 @@ export default function DraftEditor({ initial, job: initialJob, handle, li, jobA
               ))}
             </>
           )}
-          <div className="row spread"><label>Post text</label><span className={`small ${len < 900 || len > 1300 ? 'muted' : ''}`}>{len} chars (aim for 900-1,300)</span></div>
+          <div className="row spread"><label>Post text</label><span className={`small ${len < 900 || len > 1300 ? 'muted' : ''}`}>{len} chars (aim for 900-1,300){full.length !== len ? ` · ${full.length} with header + hashtags` : ''}</span></div>
           <textarea value={text} onChange={(e) => setText(e.target.value)} disabled={d.status !== 'pending'} />
           <label>First comment (links go here, not in the post)</label>
           <textarea className="small" value={firstComment} onChange={(e) => setFirstComment(e.target.value)} disabled={d.status !== 'pending'} placeholder="optional" />
@@ -214,7 +215,7 @@ export default function DraftEditor({ initial, job: initialJob, handle, li, jobA
         </div>
 
         <div className="grid" style={{ alignContent: 'start' }}>
-          <LinkedInPreview d={d} text={text} handle={handle} />
+          <LinkedInPreview d={d} text={full} handle={handle} />
           <div className="card">
             <div className="row spread">
               <div><span className="muted small">Human score</span> <span className={`chip ${d.human_verdict}`}>{d.human_score ?? '-'} {d.human_verdict}</span></div>
