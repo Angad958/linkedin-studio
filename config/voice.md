@@ -19,15 +19,17 @@ the biggest quality jump left.
   managers and recruiters at product companies, who should finish a post thinking
   "this person has actually run things in prod".
 - **What I sell:** nothing. The posts are proof of how I think. Never mention
-  job hunting, "open to work", #OpenToWork or being available in a post.
+  job hunting or being available in the post text. (#OpenToWork and the header line
+  are appended automatically when posting.)
 
 ## Posts (rules that override everything below for LinkedIn posts)
 
 - **No first person.** Posts never say I, me, my, we, our or us. They're written
   about a case study and to the reader ("you"). No personal stories, no "at my
   company", no mention of Manav's own work, numbers or job search.
-- **Every post opens with a case study**: a real, sourced incident or engineering
-  story when one exists, otherwise a clearly framed "picture this" scenario.
+- **Every post opens with a curiosity hook**: "Ever wondered how X...?" plus a short
+  surprising answer. Never open with a date. The real, sourced case study comes after the
+  explanation as "the fun part" (or a clearly framed "picture this" scenario if none fits).
 - **Understandable on first read** by a 2nd-year CS student: plain words, every
   technical term explained the first time, one everyday analogy, short sentences.
 - The "Proof I can use" list at the bottom is for recruiter emails only. Never put

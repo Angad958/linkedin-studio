@@ -52,7 +52,7 @@ def main():
     if density < 5.5:
         need = int((5.5 / per100) - numbers - len(proper)) + 1
         todo.append(f"SPECIFICITY: {density:.1f} per 100 words, need >= 5.5 (about {need} more). Add real numbers "
-                    "(dates, counts, latencies, versions) or names MID-sentence. Names at the start of a sentence "
+                    "(counts, percentages, speeds, latencies) or product names MID-sentence. No full dates (\"April 12, 2025\"); a bare year in the story is fine at most once. Names at the start of a sentence "
                     f"don't count. Counted names: {', '.join(proper) or 'none'}.")
     if contractions * per100 < 3.2:
         need = int(3.2 / per100 - contractions) + 1

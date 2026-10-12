@@ -34,8 +34,9 @@ test('canPublish depends on a live publish job, not on time', () => {
   assert.equal(canPublish({ status: 'publishing' }, false), true);
 });
 
-test('framePost adds header and hashtags and drops a trailing hashtag line', async () => {
+test('framePost adds header and merges trailing body hashtags into the footer', async () => {
   const { framePost } = await import('../lib/linkedin-format.mjs');
-  assert.equal(framePost('Body\n\n#A #B', { header: 'H', hashtags: '#X' }), 'H\n\nBody\n\n#X');
+  assert.equal(framePost('Body\n\n#A #B', { header: 'H', hashtags: '#X' }), 'H\n\nBody\n\n#X #A #B');
+  assert.equal(framePost('Body\n\n#x #Maps', { hashtags: '#X #Tech' }), 'Body\n\n#X #Tech #Maps');
   assert.equal(framePost('Body\n\n#A', {}), 'Body\n\n#A');
 });
