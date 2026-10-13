@@ -120,17 +120,30 @@ export default function DraftEditor({ initial, job: initialJob, handle, li, jobA
     return () => clearInterval(t);
   }, [d.status, startedHere]);
 
+  // Never leave a button stuck on "Saving…": any failure (404, HTML error page, network) becomes an error banner.
+  const call = async (method, body) => {
+    try {
+      const res = await fetch(`/api/drafts/${d.id}`, { method, headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+      const r = await res.json().catch(() => ({}));
+      if (!res.ok || !r.draft) return { error: r.error || `Request failed (${res.status} ${res.statusText})` };
+      return r;
+    } catch (e) {
+      return { error: `Request failed: ${e.message}` };
+    }
+  };
   const save = async (clean = false) => {
     setBusy('save');
-    const r = await fetch(`/api/drafts/${d.id}`, { method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, first_comment: firstComment, chosen_hook: chosen, clean }) }).then((x) => x.json());
-    setD(r.draft); setText(r.draft.text); setBusy('');
+    const r = await call('PATCH', { text, first_comment: firstComment, chosen_hook: chosen, clean });
+    setBusy('');
+    if (r.error) { setD((cur) => ({ ...cur, error: r.error })); return null; }
+    setD(r.draft); setText(r.draft.text);
     return r.draft;
   };
   const act = async (action, extra = {}) => {
-    if (dirty && ['approve'].includes(action)) await save();
+    if (dirty && ['approve'].includes(action) && !(await save())) return;
     setBusy(action);
-    const r = await fetch(`/api/drafts/${d.id}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action, ...extra }) }).then((x) => x.json());
-    if (r.error) { setBusy(''); setD({ ...d, error: r.error }); return; }
+    const r = await call('POST', { action, ...extra });
+    if (r.error) { setBusy(''); setD((cur) => ({ ...cur, error: r.error })); return; }
     if (action === 'publish') setStartedHere(true);
     setD(r.draft); setBusy('');
     if (action === 'reject') router.push('/');
