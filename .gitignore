@@ -1,8 +1,8 @@
 node_modules
 .next
 # personal data: database, logs, resume, contact lists, generated drafts
-data
-drafts
+/data
+/drafts
 # secrets
 .env.local
 .env*.local

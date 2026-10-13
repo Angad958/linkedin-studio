@@ -15,7 +15,7 @@ export async function POST(req) {
     spawnScript('clean-contacts.mjs', [dest]);
     return Response.json({ ok: true });
   }
-  const body = await req.json();
+  const body = await req.json().catch(() => ({}));
   switch (body.action) {
     case 'prepare': {
       if (runningJob('outreach')) return Response.json({ error: 'A batch is already being written' }, { status: 409 });
