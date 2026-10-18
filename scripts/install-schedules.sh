@@ -1,9 +1,10 @@
 #!/bin/bash
-# Installs (or re-installs) the four launchd jobs. Run again after moving the project.
+# Installs (or re-installs) the five launchd jobs. Run again after moving the project.
 #   web       keeps the Studio running at http://localhost:3000
 #   generate  07:00 daily: writes today's post draft (catches up after sleep)
 #   outreach  08:00 Mon-Fri: drafts the next 20 recruiter emails for approval
 #   sender    every 2 min: sends approved emails within the window, checks replies every 30 min
+#   autopost  12:00 daily: posts the next approved LinkedIn draft (one per day, in approval order)
 set -euo pipefail
 DIR="$(cd "$(dirname "$0")/.." && pwd)"
 NODE="$(command -v node)"
@@ -12,11 +13,11 @@ PATHS="$(dirname "$NODE"):$HOME/.local/bin:$HOME/.local/opt/ffmpeg:/Library/Fram
 mkdir -p "$LA" "$DIR/data/logs"
 
 write() { # name, program-args-xml, schedule-xml
-  cat > "$LA/com.angad.linkedin-studio.$1.plist" <<PL
+  cat > "$LA/com.linkedin-studio.$1.plist" <<PL
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
-  <key>Label</key><string>com.angad.linkedin-studio.$1</string>
+  <key>Label</key><string>com.linkedin-studio.$1</string>
   <key>ProgramArguments</key><array>$2</array>
   <key>WorkingDirectory</key><string>$DIR</string>
   <key>EnvironmentVariables</key><dict><key>PATH</key><string>$PATHS</string><key>HOME</key><string>$HOME</string></dict>
@@ -33,9 +34,10 @@ write generate "$(s "$NODE")$(s "$DIR/scripts/generate.mjs")" "<key>StartCalenda
 WEEKDAYS=""; for d in 1 2 3 4 5; do WEEKDAYS+="<dict><key>Weekday</key><integer>$d</integer><key>Hour</key><integer>8</integer><key>Minute</key><integer>0</integer></dict>"; done
 write outreach "$(s "$NODE")$(s "$DIR/scripts/outreach.mjs")" "<key>StartCalendarInterval</key><array>$WEEKDAYS</array>"
 write sender "$(s "$NODE")$(s "$DIR/scripts/send-due.mjs")" "<key>StartInterval</key><integer>120</integer><key>RunAtLoad</key><true/>"
+write autopost "$(s "$NODE")$(s "$DIR/scripts/auto-post.mjs")" "<key>StartCalendarInterval</key><dict><key>Hour</key><integer>12</integer><key>Minute</key><integer>0</integer></dict>"
 
-for n in web generate outreach sender; do
-  launchctl bootout "gui/$(id -u)/com.angad.linkedin-studio.$n" 2>/dev/null || true
-  launchctl bootstrap "gui/$(id -u)" "$LA/com.angad.linkedin-studio.$n.plist"
+for n in web generate outreach sender autopost; do
+  launchctl bootout "gui/$(id -u)/com.linkedin-studio.$n" 2>/dev/null || true
+  launchctl bootstrap "gui/$(id -u)" "$LA/com.linkedin-studio.$n.plist"
 done
 echo "Installed. Studio: http://localhost:3000   Logs: $DIR/data/logs/"

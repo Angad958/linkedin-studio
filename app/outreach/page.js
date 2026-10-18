@@ -16,5 +16,8 @@ export default function Outreach() {
     FROM contacts c WHERE c.status IN ('contacted','replied','interview','closed','opted_out','bounced') ORDER BY c.updated_at DESC LIMIT 300`).all();
   const failed = db.prepare(`SELECT m.id, m.error, c.email FROM messages m JOIN contacts c ON c.id=m.contact_id WHERE m.status='failed' ORDER BY m.id DESC LIMIT 10`).all();
   const job = db.prepare("SELECT * FROM jobs WHERE type IN ('outreach','import-contacts') ORDER BY id DESC LIMIT 1").get();
-  return <OutreachClient stats={outreachStats()} drafts={drafts} scheduled={scheduled} pipeline={pipeline} failed={failed} job={job || null} smtp={smtpReady()} />;
+  const liContacts = db.prepare(`SELECT * FROM li_contacts WHERE status != 'skipped' ORDER BY tier, created_at DESC, id`).all();
+  const liJob = db.prepare("SELECT * FROM jobs WHERE type = 'li-recruiters' ORDER BY id DESC LIMIT 1").get();
+  return <OutreachClient stats={outreachStats()} drafts={drafts} scheduled={scheduled} pipeline={pipeline} failed={failed} job={job || null} smtp={smtpReady()}
+    liContacts={liContacts} liJob={liJob || null} />;
 }

@@ -4,6 +4,7 @@
 import { config, smtpReady } from '../lib/config.mjs';
 import { addDaysLocal, getDb, kvGet, kvSet, nowLocal, todayLocal } from '../lib/db.mjs';
 import { scanInbox, sendMail, sendToSelf } from '../lib/mailer.mjs';
+import { finishJob, jobLog, startJob } from '../lib/jobs.mjs';
 import { macNotify } from '../lib/notify.mjs';
 import { OPT_OUT, bounceStats } from '../lib/outreach.mjs';
 
@@ -81,8 +82,18 @@ async function sendOne() {
   const m = db.prepare(`SELECT m.*, c.email, c.status AS cstatus FROM messages m JOIN contacts c ON c.id = m.contact_id
     WHERE m.status='approved' AND m.scheduled_at IS NOT NULL AND m.scheduled_at <= ? ORDER BY m.step DESC, m.scheduled_at, m.id LIMIT 1`).get(nowLocal());
   if (!m) return;
-  if (m.step > 0 && m.cstatus !== 'contacted') { cancelPending(m.contact_id); return; }
-  if (m.step === 0 && !['queued', 'new'].includes(m.cstatus)) { cancelPending(m.contact_id); return; }
+  if (await deliver(m)) {
+    const gapMin = config.minGapMin + Math.random() * (config.maxGapMin - config.minGapMin);
+    kvSet('next_send_at', Date.now() + gapMin * 60 * 1000);
+  }
+}
+
+// Sends one approved message and schedules the next step. Returns true if it went out.
+async function deliver(m) {
+  if (m.step > 0 && m.cstatus !== 'contacted') { cancelPending(m.contact_id); return false; }
+  if (m.step === 0 && !['queued', 'new'].includes(m.cstatus)) { cancelPending(m.contact_id); return false; }
+  // Claim the row so the 2-minute job and a "Send now" run can't both send it.
+  if (!db.prepare("UPDATE messages SET status='sending' WHERE id=? AND status='approved'").run(m.id).changes) return false;
 
   const prev = m.step > 0 ? db.prepare("SELECT message_id FROM messages WHERE contact_id=? AND step=0").get(m.contact_id) : null;
   try {
@@ -98,9 +109,8 @@ async function sendOne() {
       db.prepare("UPDATE messages SET scheduled_at=? WHERE contact_id=? AND step=? AND status='approved'")
         .run(addDaysLocal(sentAt, gapDays), m.contact_id, m.step + 1);
     })();
-    const gapMin = config.minGapMin + Math.random() * (config.maxGapMin - config.minGapMin);
-    kvSet('next_send_at', Date.now() + gapMin * 60 * 1000);
     console.log(`sent step ${m.step} to ${m.email}`);
+    return true;
   } catch (e) {
     db.prepare("UPDATE messages SET status='failed', error=? WHERE id=?").run(String(e.message).slice(0, 500), m.id);
     if (/auth|Invalid login|535|534/i.test(e.message)) {
@@ -108,7 +118,27 @@ async function sendOne() {
       macNotify('Outreach paused', 'Gmail login failed. Check your App Password.');
     }
     console.error(`send failed: ${e.message}`);
+    return false;
   }
+}
+
+// "Send now": first emails for the given contacts go out right away, ignoring the send window and the
+// 2-5 min gap. A short 20-40s pause between them keeps Gmail from flagging a burst. Pause and daily cap still apply.
+async function sendNow(ids) {
+  const job = startJob('send-now', `${ids.length} first emails`);
+  let sent = 0;
+  for (const id of ids) {
+    const paused = kvGet('sender_paused', null);
+    if (paused) { jobLog(job, `stopped: ${paused}`); break; }
+    const sentToday = db.prepare("SELECT COUNT(*) n FROM messages WHERE status='sent' AND substr(sent_at,1,10)=?").get(todayLocal()).n;
+    if (sentToday >= config.totalCapPerDay) { jobLog(job, `stopped: daily cap of ${config.totalCapPerDay} reached`); break; }
+    const m = db.prepare(`SELECT m.*, c.email, c.status AS cstatus FROM messages m JOIN contacts c ON c.id = m.contact_id
+      WHERE m.contact_id=? AND m.step=0 AND m.status='approved'`).get(id);
+    if (!m) continue;
+    if (sent) await new Promise((r) => setTimeout(r, (20 + Math.random() * 20) * 1000));
+    if (await deliver(m)) { sent++; jobLog(job, `sent to ${m.email}`); } else jobLog(job, `not sent: ${m.email}`);
+  }
+  finishJob(job, true, `${sent} of ${ids.length} sent now`);
 }
 
 async function dailySummary() {
@@ -129,6 +159,10 @@ async function dailySummary() {
 }
 
 if (!smtpReady()) process.exit(0);
+if (argv.includes('--now')) {
+  await sendNow(argv[argv.indexOf('--now') + 1].split(',').map(Number).filter(Boolean));
+  process.exit(0);
+}
 try {
   await pollInbox();
   if (!argv.includes('--poll-only')) await sendOne();

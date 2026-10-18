@@ -15,7 +15,7 @@ export default async function Settings({ searchParams }) {
   const li = authStatus();
   const voice = path.join(LI_DIR, 'voice.md');
   const jobs = getDb().prepare('SELECT * FROM jobs ORDER BY id DESC LIMIT 8').all();
-  const launchd = ['generate', 'outreach', 'sender', 'web'].map((n) => [n, fs.existsSync(path.join(process.env.HOME, 'Library/LaunchAgents', `com.angad.linkedin-studio.${n}.plist`))]);
+  const launchd = ['generate', 'outreach', 'sender', 'autopost', 'web'].map((n) => [n, fs.existsSync(path.join(process.env.HOME, 'Library/LaunchAgents', `${config.launchdPrefix}.${n}.plist`))]);
   return (
     <>
       <h1>Settings</h1>
@@ -53,7 +53,7 @@ export default async function Settings({ searchParams }) {
           <Row k="Max emails per day (incl. follow-ups)" v={config.totalCapPerDay} />
           <Row k="Send window" v={`Mon-Fri ${config.sendWindow[0]}:00-${config.sendWindow[1]}:00 local, ${config.minGapMin}-${config.maxGapMin} min apart`} />
           <Row k="#OpenToWork hashtag" v={process.env.OPEN_TO_WORK_TAG === 'false' ? 'off' : 'on'} />
-          {launchd.map(([n, ok]) => <Row key={n} k={`Schedule: ${n}`} v={`com.angad.linkedin-studio.${n}`} ok={ok} />)}
+          {launchd.map(([n, ok]) => <Row key={n} k={`Schedule: ${n}`} v={`${config.launchdPrefix}.${n}`} ok={ok} />)}
         </tbody></table>
       </div>
       <h2>Recent jobs</h2>

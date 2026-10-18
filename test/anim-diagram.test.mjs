@@ -36,3 +36,19 @@ test('flows without an edge and unknown nodes are dropped with a warning', () =>
   assert.equal(timeline[3].flows.length, 0);
   assert.equal(warnings.length, 2);
 });
+
+import { lintDiagram } from '../lib/render.mjs';
+
+test('LLD diagrams must be class diagrams with an implements arrow', () => {
+  assert.equal(lintDiagram({ style: 'lld', mermaid: 'flowchart TD\n A --> B' }).length, 2);
+  assert.deepEqual(lintDiagram({ style: 'lld', mermaid: 'classDiagram\n  class Observer {\n    <<interface>>\n    +update(Order)\n  }\n  Observer <|.. Email' }), []);
+});
+
+test('HLD diagrams need an architecture, not a chain or mermaid', () => {
+  assert.match(lintDiagram({ style: 'hld', mermaid: 'flowchart TD\n A --> B' })[0], /nodes/);
+  const chain = { style: 'hld', nodes: ['a', 'b', 'c', 'd', 'e'].map((id, i) => ({ id, label: id, kind: i ? 'service' : 'db', at: [0, i] })),
+    edges: [['a', 'b'], ['b', 'c'], ['c', 'd'], ['d', 'e']].map(([from, to]) => ({ from, to })) };
+  assert.ok(lintDiagram(chain).some((w) => /single chain/.test(w)));
+  chain.edges.push({ from: 'b', to: 'e' });
+  assert.deepEqual(lintDiagram(chain), []);
+});

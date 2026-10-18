@@ -11,3 +11,5 @@ drafts
 __pycache__
 *.pyc
 .DS_Store
+# your own copies of shipped templates
+config/li-targets.json

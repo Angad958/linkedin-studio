@@ -63,7 +63,9 @@ async function generateOne({ date, draftId, feedback, part = 'all' }) {
       for (let round = 1; !c.ok && round <= 4; round++) {
         jobLog(job, `score ${c.score} < ${TARGET_SCORE} (or rules failed), rewrite round ${round}`);
         await runClaude(`Improve ${d.dir}/post.txt so it passes the coach. Coach output:\n\n${c.report}\n\n` +
-          `Rules: keep the case study, facts, meaning and structure (hook line, → steps, analogy, fix, "Takeaway:" line, closing question). ` +
+          (['hld', 'lld'].includes(topic.pillar)
+            ? `Rules: this is a ${topic.pillar.toUpperCase()} explainer, no case study or company story. Keep the facts, meaning and structure (hook line, "The design:"/"The classes:" → steps, trade-off, "Takeaway:" line, closing question). `
+            : `Rules: keep the case study, facts, meaning and structure (hook line, → steps, analogy, fix, "Takeaway:" line, closing question). `) +
           `No first person (I/me/my/we/our/us). 900-1300 chars. Study ${ROOT}/content/reference/*.txt for rhythm. ` +
           `Edit post.txt directly, then run: python3 ${ROOT}/scripts/coach.py ${d.dir}/post.txt --target ${TARGET_SCORE} and keep iterating up to 4 times until it prints DONE. ` +
           `If you change the first line, update hooks[chosen].line in ${d.dir}/meta.json to match exactly. Reply DONE <score>.`, { onLine: (l) => l && jobLog(job, l) });

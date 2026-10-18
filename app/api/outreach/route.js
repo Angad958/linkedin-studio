@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { DATA_DIR } from '@/lib/config.mjs';
-import { getDb, kvSet, nowLocal } from '@/lib/db.mjs';
+import { DATA_DIR, smtpReady } from '@/lib/config.mjs';
+import { getDb, kvGet, kvSet, nowLocal } from '@/lib/db.mjs';
 import { runningJob, spawnScript } from '@/lib/jobs.mjs';
 
 export async function POST(req) {
@@ -22,15 +22,22 @@ export async function POST(req) {
       spawnScript('outreach.mjs', ['--n', String(body.n || 20)]);
       break;
     }
-    case 'approve': {
+    case 'approve':
+    case 'sendNow': {
       // Approve all three steps for the given contacts. First email is due now; follow-ups get scheduled once it's sent.
       const ids = body.contactIds || [];
+      if (body.action === 'sendNow') {
+        if (!smtpReady()) return Response.json({ error: 'Gmail is not connected, so nothing can be sent yet' }, { status: 400 });
+        if (runningJob('send-now')) return Response.json({ error: 'A send is already running' }, { status: 409 });
+        if (kvGet('sender_paused', null)) return Response.json({ error: 'Sending is paused. Click "Resume sending" first.' }, { status: 409 });
+      }
       db.transaction(() => {
         for (const id of ids) {
           db.prepare("UPDATE messages SET status='approved', scheduled_at=? WHERE contact_id=? AND step=0 AND status='draft'").run(nowLocal(), id);
           db.prepare("UPDATE messages SET status='approved', scheduled_at=NULL WHERE contact_id=? AND step>0 AND status='draft' AND length(body)>0").run(id);
         }
       })();
+      if (body.action === 'sendNow') spawnScript('send-due.mjs', ['--now', ids.join(',')]);
       break;
     }
     case 'edit':

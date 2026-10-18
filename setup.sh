@@ -49,6 +49,7 @@ fi
 cat <<'TXT'
 
 Done. Open http://localhost:3000
-Next: fill in .env.local (Gmail, LinkedIn keys), put your resume at data/Angad_Shah_Resume.pdf (or set RESUME_PATH),
+Next: fill in .env.local (Gmail, LinkedIn keys), put your resume at data/resume.pdf (or set RESUME_PATH),
+edit ~/.claude/linkedin/voice.md (who you are + the facts outreach may use),
 import contacts, then Settings -> Connect LinkedIn. Step-by-step: README.md, "Set up on a new Mac".
 TXT

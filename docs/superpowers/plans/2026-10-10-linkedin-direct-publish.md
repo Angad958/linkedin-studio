@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** An approved draft can be published to Angad's LinkedIn profile (text + PDF/video/image + first comment) with one deliberate "Post to LinkedIn" click, via LinkedIn's official API.
+**Goal:** An approved draft can be published to the user's LinkedIn profile (text + PDF/video/image + first comment) with one deliberate "Post to LinkedIn" click, via LinkedIn's official API.
 
 **Architecture:** Pure formatting helpers (`lib/linkedin-format.mjs`) + an HTTP client bound to a stored OAuth token (`lib/linkedin.mjs`) + a resumable orchestration function with injected deps (`lib/publish.mjs`). The web app spawns `scripts/publish.mjs` as a background job (same pattern as `generate.mjs`); OAuth is three small Next.js route handlers; the token lives in the existing `kv` table.
 
@@ -612,7 +612,7 @@ export async function POST() {
 }
 ```
 
-- [ ] **Step 3: Verify routes** — restart web (`launchctl kickstart -k gui/$(id -u)/com.angad.linkedin-studio.web`), then:
+- [ ] **Step 3: Verify routes** — restart web (`launchctl kickstart -k gui/$(id -u)/com.linkedin-studio.web`), then:
   - `curl -s -o /dev/null -w '%{http_code} %{redirect_url}\n' localhost:3000/api/linkedin/connect` → `302` to `/settings?linkedin=error&msg=Add+LINKEDIN_CLIENT_ID…` (no keys yet).
   - `curl -s -w '\n%{http_code}\n' localhost:3000/api/linkedin/callback?state=bad&code=x` → 302 to `…msg=Sign-in+link+expired…`.
   - Pick a `pending` draft id N: `curl -s -X POST localhost:3000/api/drafts/N -H 'content-type: application/json' -d '{"action":"publish"}'` → 409 `Only approved drafts can be posted (this one is pending).`
@@ -742,11 +742,11 @@ function PostToLinkedIn({ d, li, busy, onPublish }) {
 
 ---
 
-### Task 6: Live connect + smoke test (needs Angad)
+### Task 6: Live connect + smoke test (needs the user)
 
 **Files:**
 - Create: `scripts/li-smoke.mjs`
-- Modify: `README.md` (setup section), `.env.local` (Angad pastes keys)
+- Modify: `README.md` (setup section), `.env.local` (user pastes keys)
 
 **Interfaces:**
 - Consumes: `getAuth`, `createClient`, `escapeLittle`, `postUrl`.
@@ -773,9 +773,9 @@ await li.deletePost(urn);
 console.log('Deleted.');
 ```
 
-- [ ] **Step 2: Angad's setup** (hand over these exact steps): linkedin.com/developers → Create app (associate any LinkedIn Page) → Products: add **Share on LinkedIn** and **Sign In with LinkedIn using OpenID Connect** → Auth: add redirect `http://localhost:3000/api/linkedin/callback` → copy Client ID/Secret into `.env.local` as `LINKEDIN_CLIENT_ID=` / `LINKEDIN_CLIENT_SECRET=` → restart web → Settings → Connect LinkedIn.
+- [ ] **Step 2: the user's setup** (hand over these exact steps): linkedin.com/developers → Create app (associate any LinkedIn Page) → Products: add **Share on LinkedIn** and **Sign In with LinkedIn using OpenID Connect** → Auth: add redirect `http://localhost:3000/api/linkedin/callback` → copy Client ID/Secret into `.env.local` as `LINKEDIN_CLIENT_ID=` / `LINKEDIN_CLIENT_SECRET=` → restart web → Settings → Connect LinkedIn.
 
-- [ ] **Step 3: Smoke run, only with Angad's explicit OK at that moment** — `node scripts/li-smoke.mjs`. Expected: URL printed; on LinkedIn the post shows `(…)`, `[brackets]`, `snake_case`, `*stars*`, `C#` literally and `#Testing` as a hashtag; the comment shows the URL with no stray backslashes. If the comment shows backslashes or is cut, comment text must be passed through `escapeLittle` in `publishDraft` — update Task 3 test "text post" accordingly and rerun.
+- [ ] **Step 3: Smoke run, only with the user's explicit OK at that moment** — `node scripts/li-smoke.mjs`. Expected: URL printed; on LinkedIn the post shows `(…)`, `[brackets]`, `snake_case`, `*stars*`, `C#` literally and `#Testing` as a hashtag; the comment shows the URL with no stray backslashes. If the comment shows backslashes or is cut, comment text must be passed through `escapeLittle` in `publishDraft` — update Task 3 test "text post" accordingly and rerun.
 
 - [ ] **Step 4: README** — add a "Direct posting to LinkedIn" section with the Step 2 setup list and "Token lasts 60 days; Reconnect from Settings when the banner appears."
 

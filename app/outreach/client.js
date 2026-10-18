@@ -1,10 +1,11 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import LinkedInTab from './linkedin';
 
 const post = (body) => fetch('/api/outreach', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }).then((r) => r.json());
 
-function EmailCard({ group, on, toggle, onSaved }) {
+function EmailCard({ group, on, toggle, onSaved, canSend, confirming, onSendNow }) {
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(null);
   const first = group.msgs.find((m) => m.step === 0);
@@ -39,12 +40,17 @@ function EmailCard({ group, on, toggle, onSaved }) {
       <div className="row" style={{ marginTop: 8 }}>
         <a href="#" className="small" onClick={(e) => { e.preventDefault(); setOpen(!open); }}>{open ? 'hide follow-ups' : 'show 2 follow-ups'}</a>
         <a href="#" className="small danger" style={{ color: 'var(--bad)' }} onClick={async (e) => { e.preventDefault(); await post({ action: 'skip', contactId: first.contact_id }); onSaved(); }}>never email this contact</a>
+        <span style={{ flex: 1 }} />
+        <button className={`btn sm ${confirming ? 'primary' : 'ok'}`} disabled={!canSend} onClick={onSendNow}
+          title={canSend ? 'Sends this first email now with your resume attached. Follow-ups still go at +4 and +10 days.' : 'Gmail is not connected'}>
+          {confirming ? 'Click again to send' : '➤ Send'}
+        </button>
       </div>
     </div>
   );
 }
 
-export default function OutreachClient({ stats, drafts, scheduled, pipeline, failed, job, smtp }) {
+export default function OutreachClient({ stats, drafts, scheduled, pipeline, failed, job, smtp, liContacts, liJob }) {
   const router = useRouter();
   const groups = useMemo(() => {
     const m = new Map();
@@ -59,6 +65,8 @@ export default function OutreachClient({ stats, drafts, scheduled, pipeline, fai
   const [jobState, setJob] = useState(job);
   const [tab, setTab] = useState('batch');
   const [err, setErr] = useState('');
+  const [confirm, setConfirm] = useState(''); // "Send now" needs a second click: '' | 'batch' | contact id
+  const sendNow = (ids, key) => (confirm === key ? run({ action: 'sendNow', contactIds: ids }, 'sendNow') : setConfirm(key));
 
   useEffect(() => {
     if (jobState?.status !== 'running') return;
@@ -76,9 +84,11 @@ export default function OutreachClient({ stats, drafts, scheduled, pipeline, fai
     const r = await post(body);
     setBusy('');
     setErr(r.error || '');
-    if (['prepare'].includes(body.action)) {
-      setTimeout(async () => { const j = await fetch('/api/jobs?type=outreach').then((x) => x.json()); setJob(j.jobs[0]); }, 800);
+    if (['prepare', 'sendNow'].includes(body.action) && !r.error) {
+      const type = body.action === 'sendNow' ? 'send-now' : 'outreach';
+      setTimeout(async () => { const j = await fetch(`/api/jobs?type=${type}`).then((x) => x.json()); setJob(j.jobs[0]); }, 800);
     }
+    setConfirm('');
     router.refresh();
   };
   const upload = async (file) => {
@@ -120,7 +130,7 @@ export default function OutreachClient({ stats, drafts, scheduled, pipeline, fai
       </div>
 
       <div className="tabs">
-        {[['batch', `To approve (${groups.length})`], ['scheduled', `Scheduled (${scheduled.length})`], ['pipeline', `Pipeline (${pipeline.length})`]].map(([k, l]) => (
+        {[['batch', `To approve (${groups.length})`], ['scheduled', `Scheduled (${scheduled.length})`], ['pipeline', `Pipeline (${pipeline.length})`], ['linkedin', `LinkedIn (${liContacts.length})`]].map(([k, l]) => (
           <button key={k} className={`btn sm ${tab === k ? 'primary' : ''}`} onClick={() => setTab(k)}>{l}</button>
         ))}
       </div>
@@ -130,16 +140,25 @@ export default function OutreachClient({ stats, drafts, scheduled, pipeline, fai
           {groups.length > 0 && (
             <div className="card row spread" style={{ marginBottom: 12, position: 'sticky', top: 62, zIndex: 3 }}>
               <span><b>{approveIds.length}</b> of {groups.length} selected. Approving schedules the first email (spaced 2-5 min apart, Mon-Fri 9:30-18:00) and both follow-ups.</span>
-              <button className="btn ok" disabled={!approveIds.length || !!busy} onClick={() => run({ action: 'approve', contactIds: approveIds }, 'approve')}>✓ Approve {approveIds.length} &amp; schedule</button>
+              <div className="row">
+                <button className="btn ok" disabled={!approveIds.length || !!busy} onClick={() => run({ action: 'approve', contactIds: approveIds }, 'approve')}>✓ Approve {approveIds.length} &amp; schedule</button>
+                <button className={`btn ${confirm === 'batch' ? 'primary' : ''}`} disabled={!smtp || !approveIds.length || !!busy} onClick={() => sendNow(approveIds, 'batch')}
+                  title="Sends the first emails right away, 20-40s apart, ignoring the 9:30-18:00 window. Follow-ups still go at +4 and +10 days.">
+                  {confirm === 'batch' ? `Click again to send ${approveIds.length} now` : `Send ${approveIds.length} now`}
+                </button>
+              </div>
             </div>
           )}
           {groups.length === 0 && <div className="card muted">No batch waiting. A new one is drafted every morning at 8:00, or click “Draft next 20”.</div>}
           {groups.map((g) => (
             <EmailCard key={g.id} group={g} on={!off.has(g.id)} onSaved={() => router.refresh()}
+              canSend={smtp && !busy} confirming={confirm === g.id} onSendNow={() => sendNow([g.id], g.id)}
               toggle={() => setOff((p) => { const n = new Set(p); n.has(g.id) ? n.delete(g.id) : n.add(g.id); return n; })} />
           ))}
         </>
       )}
+
+      {tab === 'linkedin' && <LinkedInTab contacts={liContacts} job={liJob} />}
 
       {tab === 'scheduled' && (
         <div className="card" style={{ padding: 0, overflowX: 'auto' }}>

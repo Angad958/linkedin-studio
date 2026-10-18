@@ -4,7 +4,7 @@ Date: 2026-10-10 · Status: draft for review
 
 ## Goal
 
-Approved drafts can be published to Angad's personal LinkedIn profile from LinkedIn Studio with one
+Approved drafts can be published to the user's personal LinkedIn profile from LinkedIn Studio with one
 deliberate click, via LinkedIn's official API (Share on LinkedIn, `w_member_social`). Nothing is ever
 posted without explicit approval. The manual Publish Kit remains as a fallback.
 
@@ -104,10 +104,10 @@ Exposed through `lib/config.mjs` like the existing keys.
 - Unit (`node --test`, new `test/linkedin.test.mjs`): `escapeLittle` (every reserved char, hashtags,
   newlines, bullets), `pickMedia` for each media type, publish step resumption with a stubbed client
   (post exists → no second createPost).
-- Live smoke test (only with Angad's go-ahead at that moment): `scripts/li-smoke.mjs` posts
+- Live smoke test (only with the user's go-ahead at that moment): `scripts/li-smoke.mjs` posts
   "test, please ignore" with visibility CONNECTIONS, prints the URL, then deletes it.
 
-## One-time setup (Angad)
+## One-time setup (user)
 
 1. linkedin.com/developers → Create app (needs a LinkedIn Page to associate; any page works).
 2. Products tab → add **Share on LinkedIn** and **Sign In with LinkedIn using OpenID Connect**.
